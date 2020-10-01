@@ -40,17 +40,31 @@ ForwardCommandControllerNewComponents::ForwardCommandControllerNewComponents()
 CallbackReturn ForwardCommandControllerNewComponents::on_configure(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
+  // TODO(all): Why Lifecycle node has name of the main node? According to contoller_interface.cpp#L64
+  // it should have the name of the controller: here is how to check this...
+//   RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), lifecycle_node_->get_name());
+
   rclcpp::Parameter joints_param, interface_param;
-  if (!lifecycle_node_->get_parameter("joints", joints_param)) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "'joints' parameter not set");
-    return CallbackReturn::ERROR;
-  }
+
+  // TODO(anyone): uncoment this when the node stuff (comment above) is calarified
+//   if (!lifecycle_node_->get_parameter("joints",
+//                                       joints_param)) {
+//     RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "'joints' parameter not set");
+//     return CallbackReturn::ERROR;
+//   }
+  // TODO(anyone): remove this when above is uncommented
+  joints_param = rclcpp::Parameter("joint", std::vector<std::string>({"joint1", "joint2"}));
+
   //TODO(anyone): here should be list of interface_names and they should be defined for every joint
-  // This should be at least possible
-  if (!lifecycle_node_->get_parameter("interface_name", interface_param)) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "'interface_name' parameter not set");
-    return CallbackReturn::ERROR;
-  }
+  // This should be possible to achieve flexibility we aim for
+  // TODO(anyone): uncoment this when the node stuff (comment above) is calarified
+//   if (!lifecycle_node_->get_parameter("type",
+//                                       interface_param)) {
+//     RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "'interface_name' parameter not set");
+//     return CallbackReturn::ERROR;
+//   }
+  // TODO(anyone): remove this when above is uncommented
+  interface_param = rclcpp::Parameter("interface_name", std::string("position"));
 
   auto joint_names = joints_param.as_string_array();
   if (joint_names.empty()) {
@@ -144,11 +158,14 @@ controller_interface::return_type ForwardCommandControllerNewComponents::update(
 //       rclcpp::get_logger(
 //         logger_name_),
 //       *lifecycle_node_->get_clock(), 1000, "command size does not match number of joints");
+    RCLCPP_ERROR_STREAM(
+      rclcpp::get_logger(
+        logger_name_), "command size does not match number of joints");
     return controller_interface::return_type::ERROR;
   }
 
   for (auto index = 0ul; index < joint_num; ++index) {
-    //TODO(anyone) this is very suboptimal - but sufficient for proof of concept
+    //TODO(anyone) this is very sub-optimal - but sufficient for proof of concept
     std::vector<double> data;
     data.push_back((*joint_commands)->data[index]);
     joint_handles_[index]->set_command(data, interfaces_);
@@ -163,4 +180,4 @@ controller_interface::return_type ForwardCommandControllerNewComponents::update(
 
 PLUGINLIB_EXPORT_CLASS(
   forward_command_controller::ForwardCommandControllerNewComponents,
-    controller_interface::ControllerInterfaceNewComponents)
+  controller_interface::ControllerInterfaceNewComponents)

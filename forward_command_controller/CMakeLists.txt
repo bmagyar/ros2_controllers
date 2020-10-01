@@ -68,6 +68,7 @@ install(
 install(
   TARGETS
   forward_command_controller
+  forward_command_controller_new_components
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
