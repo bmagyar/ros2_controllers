@@ -42,7 +42,8 @@ CallbackReturn ForwardCommandControllerNewComponents::on_configure(
 {
   // TODO(all): Why Lifecycle node has name of the main node? According to contoller_interface.cpp#L64
   // it should have the name of the controller: here is how to check this...
-//   RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), lifecycle_node_->get_name());
+  RCLCPP_INFO_STREAM(rclcpp::get_logger(logger_name_),
+                     std::string("LfecycleNode name from the controller: ") + std::string(lifecycle_node_->get_name()));
 
   rclcpp::Parameter joints_param, interface_param;
 
