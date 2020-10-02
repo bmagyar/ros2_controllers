@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FORWARD_COMMAND_CONTROLLER__FORWARD_COMMAND_CONTROLLER_HPP_
-#define FORWARD_COMMAND_CONTROLLER__FORWARD_COMMAND_CONTROLLER_HPP_
+#ifndef FORWARD_COMMAND_CONTROLLER__FORWARD_COMMAND_CONTROLLER_NEW_COMPONENTS_HPP_
+#define FORWARD_COMMAND_CONTROLLER__FORWARD_COMMAND_CONTROLLER_NEW_COMPONENTS_HPP_
 
 #include <memory>
 #include <string>
@@ -43,7 +43,8 @@ namespace forward_command_controller
  * Subscribes to:
  * - \b commands (std_msgs::msg::Float64MultiArray) : The commands to apply.
  */
-class ForwardCommandControllerNewComponents : public controller_interface::ControllerInterfaceNewComponents
+class ForwardCommandControllerNewComponents
+  : public controller_interface::ControllerInterfaceNewComponents
 {
 public:
   FORWARD_COMMAND_CONTROLLER_PUBLIC
@@ -78,4 +79,4 @@ protected:
 
 }  // namespace forward_command_controller
 
-#endif  // FORWARD_COMMAND_CONTROLLER__FORWARD_COMMAND_CONTROLLER_HPP_
+#endif  // FORWARD_COMMAND_CONTROLLER__FORWARD_COMMAND_CONTROLLER_NEW_COMPONENTS_HPP_
