@@ -68,7 +68,8 @@ public:
 protected:
   using CmdType = std_msgs::msg::Float64MultiArray;
 
-  std::vector<hardware_interface::JointHandle> joint_cmd_handles_;
+  std::vector<std::string> interfaces_;
+  std::vector<std::shared_ptr<hardware_interface::components::Joint>> joint_handles_;
   realtime_tools::RealtimeBuffer<std::shared_ptr<CmdType>> rt_command_ptr_;
   rclcpp::Subscription<CmdType>::SharedPtr joints_command_subscriber_;
 
