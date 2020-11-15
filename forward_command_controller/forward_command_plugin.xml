@@ -5,11 +5,3 @@
   </description>
   </class>
 </library>
-
-<!--<library path="forward_command_controller_new_components">
-  <class name="forward_command_controller/ForwardCommandControllerNewComponents" type="forward_command_controller::ForwardCommandControllerNewComponents" base_class_type="controller_interface::ControllerInterfaceNewComponents">
-    <description>
-      The forward command controller commands a group of joints in a given interface
-    </description>
-  </class>
-</library>-->
