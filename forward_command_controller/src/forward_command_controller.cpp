@@ -63,7 +63,7 @@ controller_interface::InterfaceConfiguration
 ForwardCommandController::command_interface_configuration() const
 {
   controller_interface::InterfaceConfiguration command_interfaces_config;
-  command_interfaces_config.type = controller_interface::configuration_type::INDIVIDUAL;
+  command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
 
   for (const auto & joint : joint_names_) {
     for (const auto & interface : interfaces_) {
@@ -78,7 +78,7 @@ controller_interface::InterfaceConfiguration
 ForwardCommandController::state_interface_configuration() const
 {
   return controller_interface::InterfaceConfiguration{
-    controller_interface::configuration_type::NONE};
+    controller_interface::interface_configuration_type::NONE};
 }
 
 
@@ -107,8 +107,8 @@ controller_interface::return_type ForwardCommandController::update()
     RCLCPP_ERROR_STREAM_THROTTLE(
       get_lifecycle_node()->get_logger(),
       *lifecycle_node_->get_clock(), 1000,
-      "command size (" + std::to_string((*joint_commands)->data.size()) + ") does not match \
-      number of interfaces (" + std::to_string(command_interfaces_.size()) + ")");
+      "command size (" << (*joint_commands)->data.size() << ") does not match \
+      number of interfaces (" << command_interfaces_.size() << ")");
     return controller_interface::return_type::ERROR;
   }
 
