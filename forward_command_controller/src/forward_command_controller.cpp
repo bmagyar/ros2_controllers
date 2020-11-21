@@ -65,7 +65,7 @@ ForwardCommandController::command_interface_configuration() const
   controller_interface::InterfaceConfiguration command_interfaces_config;
   command_interfaces_config.type = controller_interface::configuration_type::INDIVIDUAL;
 
-  for (const auto joint : joint_names_) {
+  for (const auto & joint : joint_names_) {
     for (const auto interface : interfaces_) {
       command_interfaces_config.names.push_back(joint + "/" + interface);
     }
