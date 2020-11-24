@@ -23,7 +23,7 @@
 
 namespace forward_command_controller
 {
-using CallbackReturn = ForwardCommandController::CallbackReturn;
+using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
 
 ForwardCommandController::ForwardCommandController()
 : controller_interface::ControllerInterface(),
