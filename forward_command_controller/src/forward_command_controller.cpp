@@ -107,8 +107,9 @@ controller_interface::return_type ForwardCommandController::update()
     RCLCPP_ERROR_STREAM_THROTTLE(
       get_lifecycle_node()->get_logger(),
       *lifecycle_node_->get_clock(), 1000,
-      "command size (" << (*joint_commands)->data.size() << ") does not match \
-      number of interfaces (" << command_interfaces_.size() << ")");
+      "command size (" << (*joint_commands)->data.size() <<
+        ") does not match number of interfaces (" <<
+        command_interfaces_.size() << ")");
     return controller_interface::return_type::ERROR;
   }
 

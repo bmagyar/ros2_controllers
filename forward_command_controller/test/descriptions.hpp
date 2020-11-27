@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROS2_CONTROL_TEST__DESCRIPTIONS_HPP_
-#define ROS2_CONTROL_TEST__DESCRIPTIONS_HPP_
+#ifndef DESCRIPTIONS_HPP_
+#define DESCRIPTIONS_HPP_
 
 #include <string>
 
@@ -23,7 +23,7 @@
 namespace ros2_control_test
 {
 
-std::string urdf_head =
+const auto urdf_head =
   R"(
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="MinimalRobot">
@@ -75,12 +75,12 @@ std::string urdf_head =
   </joint>
 )";
 
-std::string urdf_tail =
+const auto urdf_tail =
   R"(
 </robot>
 )";
 
-std::string hardware_resources =
+const auto hardware_resources =
   R"(
   <ros2_control name="TestActuatorHardware" type="actuator">
     <hardware>
@@ -119,7 +119,7 @@ std::string hardware_resources =
   </ros2_control>
 )";
 
-std::string hardware_resources_missing_keys =
+const auto hardware_resources_missing_keys =
   R"(
   <ros2_control name="TestActuatorHardware" type="actuator">
     <hardware>
@@ -166,8 +166,9 @@ std::string hardware_resources_missing_keys =
 )";
 
 
-std::string minimal_robot_urdf = urdf_head + hardware_resources + urdf_tail;
+const auto minimal_robot_urdf = std::string(urdf_head) + std::string(hardware_resources) +
+  std::string(urdf_tail);
 
 }  // namespace ros2_control_test
 
-#endif  // ROS2_CONTROL_TEST__DESCRIPTIONS_HPP_
+#endif  // DESCRIPTIONS_HPP_
