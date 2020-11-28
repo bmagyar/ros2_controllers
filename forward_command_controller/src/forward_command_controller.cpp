@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "rclcpp/qos.hpp"
 #include "rclcpp/logging.hpp"
@@ -24,6 +25,7 @@
 namespace forward_command_controller
 {
 using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+using hardware_interface::LoanedCommandInterface;
 
 ForwardCommandController::ForwardCommandController()
 : controller_interface::ControllerInterface(),
@@ -45,7 +47,7 @@ CallbackReturn ForwardCommandController::on_configure(
     RCLCPP_ERROR_STREAM(get_lifecycle_node()->get_logger(), "'interface_name' parameter not set");
     return CallbackReturn::ERROR;
   }
-  // TODO(anyone): a vector should be recived directyl from the parameter server.
+  // TODO(anyone): a vector should be received directly from the parameter server.
   interfaces_.push_back(interface_name);
 
   joints_command_subscriber_ = lifecycle_node_->create_subscription<CmdType>(
@@ -81,10 +83,48 @@ ForwardCommandController::state_interface_configuration() const
     controller_interface::interface_configuration_type::NONE};
 }
 
+// Fill ordered_interfaces with references to the matching interfaces
+// in the same order as in joint_names
+template<typename T>
+bool get_ordered_interfaces(
+  std::vector<T> & unordered_interfaces, const std::vector<std::string> & joint_names,
+  const std::string & interface_type, std::vector<std::reference_wrapper<T>> & ordered_interfaces)
+{
+  for (const auto & joint_name : joint_names) {
+    for (auto & command_interface : unordered_interfaces) {
+      if ((command_interface.get_name() == joint_name) &&
+        (command_interface.get_interface_name() == interface_type))
+      {
+        ordered_interfaces.push_back(std::ref(command_interface));
+      }
+    }
+  }
+
+  return joint_names.size() == ordered_interfaces.size();
+}
 
 CallbackReturn ForwardCommandController::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
+  if (!state_interfaces_.empty()) {
+    RCLCPP_ERROR_STREAM(
+      get_lifecycle_node()->get_logger(),
+      "State interface was not requested by this controller but was provided some.");
+    return CallbackReturn::ERROR;
+  }
+
+  std::vector<std::reference_wrapper<LoanedCommandInterface>> ordered_interfaces;
+  if (!get_ordered_interfaces(
+      command_interfaces_, joint_names_, interfaces_[0],
+      ordered_interfaces))
+  {
+    RCLCPP_ERROR(
+      lifecycle_node_->get_logger(),
+      "Expected %u position command interfaces, got %u",
+      joint_names_.size(), ordered_interfaces.size());
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
+  }
+
   return CallbackReturn::SUCCESS;
 }
 

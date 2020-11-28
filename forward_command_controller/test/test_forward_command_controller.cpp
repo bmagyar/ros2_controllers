@@ -141,7 +141,9 @@ TEST_F(ForwardCommandControllerTest, ConfigureJointsChecksTest)
   controller_->lifecycle_node_->declare_parameter("interface_name", "acceleration");
 
   // configure failed, 'joint4' not in interfaces
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+
   auto result = controller_->lifecycle_node_->set_parameter(
     rclcpp::Parameter(
       "joints",
@@ -149,7 +151,9 @@ TEST_F(ForwardCommandControllerTest, ConfigureJointsChecksTest)
   ASSERT_TRUE(result.successful);
 
   // configure failed, 'joint1' does not support 'acceleration_command' interface
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+
   result = controller_->lifecycle_node_->set_parameter(
     rclcpp::Parameter(
       "interface_name",
@@ -158,9 +162,10 @@ TEST_F(ForwardCommandControllerTest, ConfigureJointsChecksTest)
 
   // configure successful
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
 
   // interfaces initialized
-  ASSERT_THAT(controller_->command_interfaces_, SizeIs(2));
+  ASSERT_THAT(controller_->command_interfaces_, SizeIs(3));
   ASSERT_THAT(controller_->state_interfaces_, IsEmpty());
 }
 
