@@ -41,12 +41,24 @@ CallbackReturn ForwardCommandController::on_configure(
     RCLCPP_ERROR_STREAM(get_lifecycle_node()->get_logger(), "'joints' parameter not set");
     return CallbackReturn::ERROR;
   }
+
+  if (joint_names_.empty()) {
+    RCLCPP_ERROR_STREAM(get_lifecycle_node()->get_logger(), "'joints' parameter was empty");
+    return CallbackReturn::ERROR;
+  }
+
   // TODO(anyone): here should be list of interface_names and they should be defined for every joint
   std::string interface_name;
   if (!lifecycle_node_->get_parameter("interface_name", interface_name)) {
     RCLCPP_ERROR_STREAM(get_lifecycle_node()->get_logger(), "'interface_name' parameter not set");
     return CallbackReturn::ERROR;
   }
+
+  if (interface_name.empty()) {
+    RCLCPP_ERROR_STREAM(get_lifecycle_node()->get_logger(), "'interface_name' parameter was empty");
+    return CallbackReturn::ERROR;
+  }
+
   // TODO(anyone): a vector should be received directly from the parameter server.
   interfaces_.push_back(interface_name);
 
@@ -113,10 +125,12 @@ CallbackReturn ForwardCommandController::on_activate(
     return CallbackReturn::ERROR;
   }
 
+  //  check if we have all resources defined in the "points" parameter
+  //  also verify that we *only* have the resources defined in the "points" parameter
   std::vector<std::reference_wrapper<LoanedCommandInterface>> ordered_interfaces;
   if (!get_ordered_interfaces(
       command_interfaces_, joint_names_, interfaces_[0],
-      ordered_interfaces))
+      ordered_interfaces) || command_interfaces_.size() != ordered_interfaces.size())
   {
     RCLCPP_ERROR(
       lifecycle_node_->get_logger(),

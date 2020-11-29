@@ -28,8 +28,15 @@
 // subclassing and friending so we can access member varibles
 class FriendForwardCommandController : public forward_command_controller::ForwardCommandController
 {
-  FRIEND_TEST(ForwardCommandControllerTest, ConfigureParamsTest);
-  FRIEND_TEST(ForwardCommandControllerTest, ConfigureJointsChecksTest);
+  FRIEND_TEST(ForwardCommandControllerTest, JointsParameterNotSet);
+  FRIEND_TEST(ForwardCommandControllerTest, InterfaceParameterNotSet);
+  FRIEND_TEST(ForwardCommandControllerTest, JointsParameterIsEmpty);
+  FRIEND_TEST(ForwardCommandControllerTest, InterfaceParameterEmpty);
+  FRIEND_TEST(ForwardCommandControllerTest, ConfigureParamsSuccess);
+
+  FRIEND_TEST(ForwardCommandControllerTest, ActivateWithWrongJointsNamesFails);
+  FRIEND_TEST(ForwardCommandControllerTest, ActivateWithWrongInterfaceNameFails);
+  FRIEND_TEST(ForwardCommandControllerTest, ActivateSuccess);
   FRIEND_TEST(ForwardCommandControllerTest, CommandSuccessTest);
   FRIEND_TEST(ForwardCommandControllerTest, WrongCommandCheckTest);
   FRIEND_TEST(ForwardCommandControllerTest, NoCommandCheckTest);
