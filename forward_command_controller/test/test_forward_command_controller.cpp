@@ -164,7 +164,7 @@ TEST_F(ForwardCommandControllerTest, ActivateWithWrongJointsNamesFails)
       rclcpp::ParameterValue(std::vector<std::string>{"joint1", "joint2"})));
   ASSERT_TRUE(result.successful);
 
-  // configure failed, 'joint1' does not support 'acceleration_command' interface
+  // activate failed, 'joint1' does not support 'acceleration_command' interface
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
 }
