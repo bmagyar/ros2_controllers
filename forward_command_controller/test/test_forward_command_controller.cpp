@@ -154,7 +154,7 @@ TEST_F(ForwardCommandControllerTest, ActivateWithWrongJointsNamesFails)
     rclcpp::ParameterValue(std::vector<std::string>{"joint1", "joint2", "joint4"}));
   controller_->lifecycle_node_->declare_parameter("interface_name", "position");
 
-  // configure failed, 'joint4' not in interfaces
+  // activate failed, 'joint4' not in interfaces
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
   ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
 
