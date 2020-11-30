@@ -22,9 +22,10 @@
 #include "rclcpp/qos.hpp"
 #include "rclcpp/logging.hpp"
 
+#include "hardware_interface/loaned_command_interface.hpp"
+
 namespace forward_command_controller
 {
-using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
 using hardware_interface::LoanedCommandInterface;
 
 ForwardCommandController::ForwardCommandController()
