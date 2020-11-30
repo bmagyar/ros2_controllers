@@ -97,7 +97,7 @@ TEST_F(ForwardCommandControllerTest, InterfaceParameterNotSet)
 {
   SetUpController();
 
-  // configure failed, 'interface_name' paremeter not set
+  // configure failed, 'interface_name' parameter not set
   controller_->lifecycle_node_->declare_parameter(
     "joints",
     rclcpp::ParameterValue(std::vector<std::string>()));
