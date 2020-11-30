@@ -89,7 +89,7 @@ TEST_F(ForwardCommandControllerTest, JointsParameterNotSet)
   SetUpController();
   controller_->lifecycle_node_->declare_parameter("interface_name", "dummy");
 
-  // configure failed, 'joints' paremeter not set
+  // configure failed, 'joints' parameter not set
   ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
 }
 
