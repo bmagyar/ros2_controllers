@@ -22,8 +22,8 @@
 
 #include "gmock/gmock.h"
 
-#include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "hardware_interface/loaned_command_interface.hpp"
+#include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "forward_command_controller/forward_command_controller.hpp"
 #include "hardware_interface/joint_handle.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
