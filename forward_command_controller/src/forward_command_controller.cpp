@@ -120,8 +120,7 @@ controller_interface::CallbackReturn ForwardCommandController::on_activate(
     RCLCPP_ERROR(
       node_->get_logger(), "Expected %zu position command interfaces, got %zu", joint_names_.size(),
       ordered_interfaces.size());
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::controller_interface::
-      CallbackReturn::ERROR;
+    return controller_interface::CallbackReturn::ERROR;
   }
 
   // reset command buffer if a command came through callback when controller was inactive
