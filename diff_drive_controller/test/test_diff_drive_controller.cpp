@@ -28,7 +28,6 @@
 #include "lifecycle_msgs/msg/state.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
 using hardware_interface::HW_IF_POSITION;
 using hardware_interface::HW_IF_VELOCITY;
 using hardware_interface::LoanedCommandInterface;
@@ -185,7 +184,9 @@ TEST_F(TestDiffDriveController, configure_fails_without_parameters)
   const auto ret = controller_->init(controller_name);
   ASSERT_EQ(ret, controller_interface::return_type::OK);
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(TestDiffDriveController, configure_fails_with_only_left_or_only_right_side_defined)
@@ -198,14 +199,18 @@ TEST_F(TestDiffDriveController, configure_fails_with_only_left_or_only_right_sid
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(std::vector<std::string>())));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("left_wheel_names", rclcpp::ParameterValue(std::vector<std::string>())));
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(TestDiffDriveController, configure_fails_with_mismatching_wheel_side_size)
@@ -221,7 +226,9 @@ TEST_F(TestDiffDriveController, configure_fails_with_mismatching_wheel_side_size
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(extended_right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(TestDiffDriveController, configure_succeeds_when_wheels_are_specified)
@@ -234,7 +241,9 @@ TEST_F(TestDiffDriveController, configure_succeeds_when_wheels_are_specified)
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
 
   ASSERT_THAT(
     controller_->state_interface_configuration().names,
@@ -254,8 +263,12 @@ TEST_F(TestDiffDriveController, activate_fails_without_resources_assigned)
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(TestDiffDriveController, activate_succeeds_with_pos_resources_assigned)
@@ -269,9 +282,13 @@ TEST_F(TestDiffDriveController, activate_succeeds_with_pos_resources_assigned)
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
   assignResourcesPosFeedback();
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
 }
 
 TEST_F(TestDiffDriveController, activate_succeeds_with_vel_resources_assigned)
@@ -286,9 +303,13 @@ TEST_F(TestDiffDriveController, activate_succeeds_with_vel_resources_assigned)
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
   assignResourcesVelFeedback();
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
 }
 
 TEST_F(TestDiffDriveController, activate_fails_with_wrong_resources_assigned_1)
@@ -303,9 +324,13 @@ TEST_F(TestDiffDriveController, activate_fails_with_wrong_resources_assigned_1)
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
   assignResourcesPosFeedback();
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(TestDiffDriveController, activate_fails_with_wrong_resources_assigned_2)
@@ -320,9 +345,13 @@ TEST_F(TestDiffDriveController, activate_fails_with_wrong_resources_assigned_2)
   controller_->get_node()->set_parameter(
     rclcpp::Parameter("right_wheel_names", rclcpp::ParameterValue(right_wheel_names)));
 
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
   assignResourcesVelFeedback();
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(TestDiffDriveController, cleanup)

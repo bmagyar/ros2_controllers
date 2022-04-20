@@ -27,7 +27,6 @@
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "test_joint_group_position_controller.hpp"
 
-using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
 using hardware_interface::LoanedCommandInterface;
 
 namespace
@@ -69,7 +68,9 @@ TEST_F(JointGroupPositionControllerTest, JointsParameterNotSet)
   SetUpController();
 
   // configure failed, 'joints' parameter not set
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(JointGroupPositionControllerTest, JointsParameterIsEmpty)
@@ -78,7 +79,9 @@ TEST_F(JointGroupPositionControllerTest, JointsParameterIsEmpty)
   controller_->get_node()->set_parameter({"joints", std::vector<std::string>()});
 
   // configure failed, 'joints' is empty
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(JointGroupPositionControllerTest, ConfigureAndActivateParamsSuccess)
@@ -87,8 +90,12 @@ TEST_F(JointGroupPositionControllerTest, ConfigureAndActivateParamsSuccess)
   controller_->get_node()->set_parameter({"joints", joint_names_});
 
   // configure successful
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
 }
 
 TEST_F(JointGroupPositionControllerTest, ActivateWithWrongJointsNamesFails)
@@ -97,21 +104,31 @@ TEST_F(JointGroupPositionControllerTest, ActivateWithWrongJointsNamesFails)
   controller_->get_node()->set_parameter({"joints", std::vector<std::string>{"joint1", "joint4"}});
 
   // activate failed, 'joint4' is not a valid joint name for the hardware
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 
   controller_->get_node()->set_parameter({"joints", std::vector<std::string>{"joint1", "joint2"}});
 
   // activate failed, 'acceleration' is not a registered interface for `joint1`
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
-  ASSERT_EQ(controller_->on_activate(rclcpp_lifecycle::State()), CallbackReturn::ERROR);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_activate(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::ERROR);
 }
 
 TEST_F(JointGroupPositionControllerTest, CommandSuccessTest)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
 
   // update successful though no command has been send yet
   ASSERT_EQ(
@@ -143,7 +160,9 @@ TEST_F(JointGroupPositionControllerTest, WrongCommandCheckTest)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
 
   // send command with wrong number of joints
   auto command_ptr = std::make_shared<forward_command_controller::CmdType>();
@@ -165,7 +184,9 @@ TEST_F(JointGroupPositionControllerTest, NoCommandCheckTest)
 {
   SetUpController();
   controller_->get_node()->set_parameter({"joints", joint_names_});
-  ASSERT_EQ(controller_->on_configure(rclcpp_lifecycle::State()), CallbackReturn::SUCCESS);
+  ASSERT_EQ(
+    controller_->on_configure(rclcpp_lifecycle::State()),
+    controller_interface::CallbackReturn::SUCCESS);
 
   // update successful, no command received yet
   ASSERT_EQ(
