@@ -120,23 +120,9 @@ controller_interface::return_type JointTrajectoryController::update(
   state_current_.time_from_start.set__sec(0);
   read_state_from_hardware(state_current_);
 
-  if (start_with_holding_)
+  if (start_holding_)
   {
-    // Command to stay at current position
-    trajectory_msgs::msg::JointTrajectory current_pose_msg;
-    current_pose_msg.header.stamp = rclcpp::Time(0);
-    current_pose_msg.joint_names = params_.joints;
-    current_pose_msg.points.push_back(state_current_);
-    current_pose_msg.points[0].velocities.clear();     // ensure no velocity
-    current_pose_msg.points[0].accelerations.clear();  // ensure no acceleration
-    current_pose_msg.points[0].effort.clear();  // ensure no explicit effort (PID will fix this)
-
-    aborted_traj_ptr =
-      traj_external_point_ptr_
-        ->get_trajectory_msg();  // Used to avoid updating the trajectory back to the aborted one
-    traj_external_point_ptr_->update(
-      std::make_shared<trajectory_msgs::msg::JointTrajectory>(current_pose_msg));
-    start_with_holding_ = false;
+    set_hold_position();
   }
 
   auto compute_error_for_joint = [&](
@@ -1412,8 +1398,21 @@ void JointTrajectoryController::preempt_active_goal()
 
 void JointTrajectoryController::set_hold_position()
 {
-  // TODO(c-rizz) Should I use writeFromNonRT?
-  start_with_holding_ = true;
+    // Command to stay at current position
+    trajectory_msgs::msg::JointTrajectory current_pose_msg;
+    current_pose_msg.header.stamp = rclcpp::Time(0);
+    current_pose_msg.joint_names = params_.joints;
+    current_pose_msg.points.push_back(state_current_);
+    current_pose_msg.points[0].velocities.clear();     // ensure no velocity
+    current_pose_msg.points[0].accelerations.clear();  // ensure no acceleration
+    current_pose_msg.points[0].effort.clear();  // ensure no explicit effort (PID will fix this)
+
+    aborted_traj_ptr =
+      traj_external_point_ptr_
+        ->get_trajectory_msg();  // Used to avoid updating the trajectory back to the aborted one
+    traj_external_point_ptr_->update(
+      std::make_shared<trajectory_msgs::msg::JointTrajectory>(current_pose_msg));
+    start_with_holding_ = false;
 }
 
 bool JointTrajectoryController::contains_interface_type(
