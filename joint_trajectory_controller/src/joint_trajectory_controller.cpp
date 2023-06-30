@@ -120,7 +120,7 @@ controller_interface::return_type JointTrajectoryController::update(
   state_current_.time_from_start.set__sec(0);
   read_state_from_hardware(state_current_);
 
-  if (start_holding_)
+  if (start_with_holding_)
   {
     set_hold_position();
   }
