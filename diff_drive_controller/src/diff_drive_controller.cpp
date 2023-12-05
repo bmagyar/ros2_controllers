@@ -35,7 +35,7 @@ constexpr auto DEFAULT_COMMAND_OUT_TOPIC = "~/cmd_vel_out";
 constexpr auto DEFAULT_ODOMETRY_TOPIC = "~/odom";
 constexpr auto DEFAULT_TRANSFORM_TOPIC = "/tf";
 
-  using ControllerTwistReferenceMsg = geometry_msgs::msg::TwistStamped;
+using ControllerTwistReferenceMsg = geometry_msgs::msg::TwistStamped;
 
 }  // namespace
 
@@ -57,7 +57,6 @@ void reset_controller_reference_msg(
 }
 
 }  // namespace
-
 
 namespace diff_drive_controller
 {
@@ -139,8 +138,7 @@ DiffDriveController::on_export_reference_interfaces()
   return reference_interfaces;
 }
 
-void DiffDriveController::reference_callback(
-  const std::shared_ptr<ControllerTwistReferenceMsg> msg)
+void DiffDriveController::reference_callback(const std::shared_ptr<ControllerTwistReferenceMsg> msg)
 {
   // if no timestamp provided use current time for command timestamp
   if (msg->header.stamp.sec == 0 && msg->header.stamp.nanosec == 0u)
@@ -166,38 +164,6 @@ void DiffDriveController::reference_callback(
       ref_timeout_.seconds());
   }
 }
-
-void DiffDriveController::reference_callback_unstamped(
-  const std::shared_ptr<geometry_msgs::msg::Twist> msg)
-{
-  auto twist_stamped = *(received_velocity_msg_ptr_.readFromNonRT());
-  twist_stamped->header.stamp = get_node()->now();
-  // if no timestamp provided use current time for command timestamp
-  if (twist_stamped->header.stamp.sec == 0 && twist_stamped->header.stamp.nanosec == 0u)
-  {
-    RCLCPP_WARN(
-      get_node()->get_logger(),
-      "Timestamp in header is missing, using current time as command timestamp.");
-    twist_stamped->header.stamp = get_node()->now();
-  }
-
-  const auto age_of_last_command = get_node()->now() - twist_stamped->header.stamp;
-
-  if (ref_timeout_ == rclcpp::Duration::from_seconds(0) || age_of_last_command <= ref_timeout_)
-  {
-    twist_stamped->twist = *msg;
-  }
-  else
-  {
-    RCLCPP_ERROR(
-      get_node()->get_logger(),
-      "Received message has timestamp %.10f older for %.10f which is more then allowed timeout "
-      "(%.4f).",
-      rclcpp::Time(twist_stamped->header.stamp).seconds(), age_of_last_command.seconds(),
-      ref_timeout_.seconds());
-  }
-}
-
 
 controller_interface::return_type DiffDriveController::update_reference_from_subscribers(
   const rclcpp::Time & time, const rclcpp::Duration & /*period*/)
@@ -260,9 +226,8 @@ controller_interface::return_type DiffDriveController::update_and_write_commands
       if (std::isnan(left_feedback) || std::isnan(right_feedback))
       {
         RCLCPP_ERROR(
-          get_node()->get_logger(),
-           "Either the left or right wheel %s is invalid for index [%zu]", feedback_type(),
-          index);
+          get_node()->get_logger(), "Either the left or right wheel %s is invalid for index [%zu]",
+          feedback_type(), index);
         return controller_interface::return_type::ERROR;
       }
 
@@ -427,10 +392,11 @@ controller_interface::CallbackReturn DiffDriveController::on_configure(
 
   if (publish_limited_velocity_)
   {
-    limited_velocity_publisher_ =
-      get_node()->create_publisher<ControllerTwistReferenceMsg>(DEFAULT_COMMAND_OUT_TOPIC, rclcpp::SystemDefaultsQoS());
+    limited_velocity_publisher_ = get_node()->create_publisher<ControllerTwistReferenceMsg>(
+      DEFAULT_COMMAND_OUT_TOPIC, rclcpp::SystemDefaultsQoS());
     realtime_limited_velocity_publisher_ =
-      std::make_shared<realtime_tools::RealtimePublisher<ControllerTwistReferenceMsg>>(limited_velocity_publisher_);
+      std::make_shared<realtime_tools::RealtimePublisher<ControllerTwistReferenceMsg>>(
+        limited_velocity_publisher_);
   }
 
   received_velocity_msg_ptr_.reset();
@@ -679,18 +645,15 @@ controller_interface::CallbackReturn DiffDriveController::configure_side(
   return controller_interface::CallbackReturn::SUCCESS;
 }
 
-
 bool DiffDriveController::on_set_chained_mode(bool chained_mode)
 {
   // Always accept switch to/from chained mode
   return true || chained_mode;
 }
 
-
 }  // namespace diff_drive_controller
 
 #include "class_loader/register_macro.hpp"
 
 CLASS_LOADER_REGISTER_CLASS(
-  diff_drive_controller::DiffDriveController,
-  controller_interface::ChainableControllerInterface)
+  diff_drive_controller::DiffDriveController, controller_interface::ChainableControllerInterface)

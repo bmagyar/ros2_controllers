@@ -60,12 +60,11 @@ public:
   DIFF_DRIVE_CONTROLLER_PUBLIC
   controller_interface::InterfaceConfiguration state_interface_configuration() const override;
 
-  DIFF_DRIVE_CONTROLLER_PUBLIC controller_interface::return_type
-  update_reference_from_subscribers(
+  DIFF_DRIVE_CONTROLLER_PUBLIC controller_interface::return_type update_reference_from_subscribers(
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
-  DIFF_DRIVE_CONTROLLER_PUBLIC controller_interface::return_type
-  update_and_write_commands(const rclcpp::Time & time, const rclcpp::Duration & period) override;
+  DIFF_DRIVE_CONTROLLER_PUBLIC controller_interface::return_type update_and_write_commands(
+    const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
   DIFF_DRIVE_CONTROLLER_PUBLIC
   controller_interface::CallbackReturn on_init() override;
@@ -97,11 +96,9 @@ public:
   using ControllerTwistReferenceMsg = geometry_msgs::msg::TwistStamped;
 
 protected:
-
-    bool on_set_chained_mode(bool chained_mode) override;
+  bool on_set_chained_mode(bool chained_mode) override;
 
   std::vector<hardware_interface::CommandInterface> on_export_reference_interfaces() override;
-
 
   struct WheelHandle
   {
@@ -138,7 +135,8 @@ protected:
   bool subscriber_is_active_ = false;
   rclcpp::Subscription<Twist>::SharedPtr velocity_command_subscriber_ = nullptr;
 
-  realtime_tools::RealtimeBuffer<std::shared_ptr<ControllerTwistReferenceMsg>> received_velocity_msg_ptr_{nullptr};
+  realtime_tools::RealtimeBuffer<std::shared_ptr<ControllerTwistReferenceMsg>>
+    received_velocity_msg_ptr_{nullptr};
 
   std::queue<Twist> previous_commands_;  // last two commands
 
@@ -163,11 +161,9 @@ protected:
   bool reset();
   void halt();
 
-  private:
+private:
   // callback for topic interface
-  void reference_callback(
-    const std::shared_ptr<ControllerTwistReferenceMsg> msg);
-  void reference_callback_unstamped(const std::shared_ptr<geometry_msgs::msg::Twist> msg);
+  void reference_callback(const std::shared_ptr<ControllerTwistReferenceMsg> msg);
 };
 }  // namespace diff_drive_controller
 #endif  // DIFF_DRIVE_CONTROLLER__DIFF_DRIVE_CONTROLLER_HPP_
